@@ -1,0 +1,172 @@
+<!-- DOCTYPE HTML -->
+<html>
+<head>
+<title>iTunes API</title>
+<!-- <link rel="stylesheet" type="text/css" href="bower_components/bootstrap/dist/css/bootstrap.min.css">
+<link rel="stylesheet" type="text/css" href="bower_components/bootstrap/dist/css/style.css"> -->
+</head>
+<body>
+<div id="content"></div>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+<script src="https://fb.me/react-0.14.6.js"></script>
+<script src="https://fb.me/react-dom-0.14.6.js"></script>
+<script src="http://fb.me/JSXTransformer-0.12.1.js"></script>
+<script type="text/jsx">
+
+var App = React.createClass({
+
+    getInitialState: function() {
+        return {
+            searchResults: []
+        }
+    },
+
+    showResults: function(response){
+        this.setState({
+            searchResults: response.results
+
+        })
+    },
+
+    search: function(URL){
+
+      $.get(URL,
+           function(data) {
+
+                  document.write(data.name);
+                var k=[];
+                k=Object.keys(data);
+                document.write(k);
+
+                var data1=JSON.stringify(data);
+                //console.log(data1);
+                document.write(data1);
+
+
+
+                var parsed = JSON.parse(data1);
+                console.log(parsed);
+
+
+                var arr = [];
+
+                for(var x in parsed)
+                {
+                    arr.push(parsed[x]);
+
+                }
+                //document.write(arr);
+                document.writeln("<table border=2>");
+                for(var i=0; i<arr.length;i++)
+                {
+                  document.writeln("<tr><th>"+k[i]+"</th><td>"+arr[i]+"</td></tr>");
+                }
+                document.writeln("</table> <br> <input type=button name=Edit value=Edit />");
+           },
+           "json")
+    },
+
+    render: function(){
+        return (
+            <div>
+                <SearchBox search={this.search} />
+                <Results searchResults={this.state.searchResults} />
+            </div>
+        );
+    },
+
+
+
+});
+
+var SearchBox = React.createClass({
+
+    render: function(){
+        return (
+            <div>
+            <div className = "well">
+              <h1>Welcome to Weather App</h1>
+            <div className = "container">
+
+            <a href="#" id="a1" ref="query" onClick={this.createAjax}>Pune </a><br />
+            <a href="#" id="a2" ref="query" onClick={this.createAjax}>Bangalore </a><br />
+            <a href="#" id="a3" ref="query" onClick={this.createAjax}>Hyderabad </a><br />
+            <a href="#" id="a4" ref="query" onClick={this.createAjax}>Delhi </a>
+
+            <div className="form-group">
+            <div className="col-sm-offset-4 col-sm-10">
+                <br />
+                <input type="submit" onClick={this.createAjax} className="btn btn-success"/>
+            </div>
+            </div>
+               </div>
+               </div>
+               </div>
+
+
+        );
+    },
+
+    createAjax: function(){
+          var a1_text = $('#a1').text();
+          console.log(a1_text);
+          var a2_text = $('#a2').text();
+          console.log(a2_text);
+          var a3_text = $('#a3').text();
+          console.log(a3_text);
+          var a4_text = $('#a4').text();
+          console.log(a4_text);
+          // alert(a1_text);
+
+          // var query =a1_text;
+          // var query =a2_text;
+          // var query =a3_text;
+
+           var query =a1_text;
+
+          console.log(query);
+
+      //  var query    = ReactDOM.findDOMNode(this.refs.query).value;
+      //  var URL      = 'http://www.omdbapi.com/?t=' + query;
+
+      //  var URL  = 'http://api.openweathermap.org/data/2.5/weather/?q='+ query + '&APPID=86fe55e9ec8321ab19350ef592627b55';
+
+        var URL  ='http://localhost:8080/get/' +query;
+
+        console.log(URL);
+        this.props.search(URL)
+    }
+
+});
+
+var Results = React.createClass({
+
+    render: function(){
+        var resultItems = this.props.searchResults.map(function(result) {
+
+            return <ResultItem key={result.trackId} trackName={result.trackName} />
+
+        });
+
+        return(
+            <ul>
+                {resultItems}
+            </ul>
+        );
+    }
+});
+
+var ResultItem = React.createClass({
+    render: function(){
+        return <li>{this.props.trackName}</li>;
+    }
+});
+
+
+
+
+ReactDOM.render(<App />,  document.getElementById("content"));
+
+</script>
+
+</html>
